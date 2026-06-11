@@ -515,6 +515,7 @@ def watch_command() -> None:
     def action() -> None:
         last = read_clipboard()
         print_info("", command="--watch running")
+        cfg = load_config()
         while True:
             time.sleep(0.75)
             current = read_clipboard()
@@ -526,8 +527,14 @@ def watch_command() -> None:
                     command="--watch new content detected",
                     replacements={"timestamp": timestamp, "preview": preview(current, 100)}
                 )
-                # Automatically save the clipboard change to history
-                _save_if_enabled(current, "clipboard")
+                # Always save clipboard changes to history in spy mode
+                # (regardless of auto_save_history setting)
+                add_history(
+                    current,
+                    "clipboard",
+                    max_entries=cfg.max_history_entries,
+                    deduplicate_consecutive=cfg.deduplicate_consecutive,
+                )
 
     _run(action)
 
