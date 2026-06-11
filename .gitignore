@@ -144,5 +144,49 @@ test_*.py
 test_*.txt
 
 # Message state tracking (user-specific)
-.zibi-messages/.message-state.json
-zibi/.zibi-messages/.message-state.json
+.zibi-messages/
+.message-state.json
+zibi/.zibi-messages/
+zibi/.message-state.json
+
+# Test and demo scripts
+demo-cycling.ps1
+test-cycling.ps1
+test-cycling-live.ps1
+test-live.sh
+test-messages.ps1
+test-paths.py
+test-spy-autosave.sh
+test-*.sh
+*.sh
+*.ps1
+
+# Verification and setup scripts
+final-verification.ps1
+verify-final.ps1
+verify-system.ps1
+zibi-command.ps1
+zibi-messages.ps1
+show-result.ps1
+
+# Output and temporary files
+error.txt
+success.txt
+help.txt
+
+# Documentation (generated during setup/testing)
+CYCLING-MESSAGES-TEST.md
+CYCLING-SYSTEM-GUIDE.md
+INSTALLATION-GUIDE.md
+INTEGRATION-COMPLETE.md
+QUICK-REFERENCE.txt
+QUICK-SETUP.md
+README-MESSAGES.md
+SETUP-COMPLETE.md
+SHELL-INTEGRATION-GUIDE.md
+SPY-MODE-GUIDE.md
+SYSTEM-SUMMARY.txt
+SYSTEM-WIDE-INSTALLATION.md
+TESTING_WITHOUT_INSTALL.md
+FINAL-TEST.ps1
+

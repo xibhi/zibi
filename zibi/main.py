@@ -195,6 +195,7 @@ def _help_command_table() -> Table:
         ("--stats", "Stare at graphs of your clipboard addiction."),
         ("--config", "Tell zibi how you want to be treated. It will comply."),
         ("--version", "Find out how old this thing is."),
+        ("--uninstall", "Kills zibi from your system completely."),
     ]
     for command, description in rows:
         table.add_row(command, description)
@@ -204,7 +205,7 @@ def _help_command_table() -> Table:
 def show_help() -> None:
     # ASCII-safe logo for Windows compatibility (Unicode blocks don't work on Windows)
     logo_text = """              ███  █████      ███ 
-              ░░░   ░░███      ░░░  
+         ░░░   ░░███      ░░░  
  █████████ ████ ░███████  ████ 
 ░█░░░░███ ░░███ ░███░░███░░███ 
 ░   ███░   ░███   ░███ ░███ ░███ 
@@ -227,6 +228,7 @@ def show_help() -> None:
         ("--paste", "Spit out whatever zibi is currently sitting on."),
         ("--snatch", "Snitch on the last command you ran via zibi-run."),
         ("--init", "Teach your shell to spy for zibi."),
+        ("--uninstall", "Kills zibi from your system completely."),
         ("--log", "Scroll through zibi's diary of everything you copied."),
         ("--fetch <index>", "Resurrect a dead clipboard entry back to life."),
         ("--grep", "Dig through the graveyard for something specific."),
@@ -420,9 +422,16 @@ def install_hooks_command(
             f"{summary}\n\n"
             f"✓ Installation complete!\n"
             f"Shell: {detected_shell}\n\n"
-            f"To activate now:\n"
-            f"  exec {detected_shell}\n\n"
-            f"Or open a new terminal and use zibi from anywhere!",
+            f"To activate now, run one of:\n"
+            f"  exec {detected_shell}\n"
+            f"  source ~/.bashrc          # bash\n"
+            f"  source ~/.zshrc           # zsh\n"
+            f"  exec fish                 # fish\n\n"
+            f"Or simply open a new terminal!\n\n"
+            f"Then use zibi from anywhere:\n"
+            f"  zibi --count\n"
+            f"  zibi_run pytest tests/\n"
+            f"  zibi --snatch",
             command="--init"
         )
         
@@ -831,6 +840,7 @@ def main() -> None:
         "--paste": "@paste",
         "--snatch": "@snatch",
         "--init": "@init",
+        "--uninstall": "@uninstall",
         "--log": "@log",
         "--fetch": "@fetch",
         "--grep": "@grep",
