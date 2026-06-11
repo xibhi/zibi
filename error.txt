@@ -1,0 +1,101 @@
+# Clipboard is empty
+"Clipboard is empty. zibi has nothing to work with."
+"Nothing in the clipboard. Copy something first."
+"zibi is starving. Give it something to copy."
+
+# --copy no input given
+"You gave zibi nothing. Text, file, or pipe. Pick one."
+"Empty handed. zibi needs something to steal."
+
+# --copy --file file not found
+"zibi looked for '{path}' and found absolutely nothing."
+"That file doesn't exist. zibi checked twice."
+"'{path}' is not real. zibi is confused and hurt."
+
+# --fetch / recall index out of range
+"Index {n} doesn't exist. zibi only has {max} entries."
+"That entry is gone or never existed. Try --log first."
+"Out of range. zibi checked the whole diary. Nothing at {n}."
+
+# --kill / delete index out of range
+"Nothing to kill at index {n}. It's already dead or never existed."
+"Index {n} not found. zibi can't erase what isn't there."
+
+# --kill / delete trying to delete a pinned item
+"That one is pinned. zibi refuses to touch it."
+"Pinned entries are untouchable. Use --pin to unpin it first."
+
+# --pin index out of range
+"Index {n} doesn't exist. Pin something that's actually there."
+"zibi checked the history. No entry at {n}."
+
+# --fetch index not a number
+"That's not an index. zibi needs a number, not '{val}'."
+"Give zibi a number. '{val}' means nothing to it."
+
+# --transform unknown mode
+"'{mode}' is not a real mode. zibi doesn't know that spell."
+"Unknown transform mode. Try: upper lower trim flip encode decode sanitize humanize wordcount lines"
+
+# --transform clipboard is empty
+"Nothing to transform. Clipboard is empty."
+"zibi cannot perform dark magic on nothing."
+
+# --share upload failed (termbin)
+"termbin rejected zibi. Check your connection and try again."
+"Upload failed. termbin is either down or not in the mood."
+"Network error. zibi tried to yeet it but missed."
+
+# --share upload failed (paste.rs)
+"paste.rs said no. Check your connection."
+"Upload failed. paste.rs is having a moment."
+
+# --search no results
+"Nothing found for '{query}'. zibi dug through everything."
+"Zero matches. Whatever you're looking for, it's not in here."
+
+# --history empty
+"History is empty. zibi has nothing to show you."
+"No entries yet. Copy something first."
+
+# --pins no pinned items
+"Nothing pinned. Use --pin to protect an entry."
+"Pin wall is empty. zibi has no permanent memories."
+
+# --qr clipboard is not a URL
+"zibi only makes QR codes for links. That's not a link."
+"QR mode is for URLs only. As mentioned in --help, links only."
+"That looks like text, not a URL. zibi refuses to QR-ify it."
+"Did you read --help? QR codes are for links. Not your grocery list."
+
+# --qr clipboard is empty
+"Nothing to QR. Clipboard is empty. Copy a link first."
+
+# --watch interrupted (Ctrl+C)
+"Surveillance ended. zibi stopped watching."
+"Watch mode cancelled. zibi is no longer spying."
+
+# --wipe nothing to wipe
+"History is already empty. Nothing to burn."
+"zibi checked the diary. Already blank."
+
+# --wipe confirmation declined
+"Wipe cancelled. History lives to see another day."
+"zibi stood down. Nothing was destroyed."
+
+# --clear confirmation declined
+"Clear cancelled. Clipboard left untouched."
+
+# pyperclip not set up (Linux, xclip missing)
+"xclip is not installed. zibi cannot access your clipboard."
+"Install xclip first: sudo apt install xclip  or  sudo pacman -S xclip"
+
+# --config invalid input
+"That's not a valid option. zibi is waiting for a real answer."
+
+# --init shell not supported
+"zibi doesn't know how to hook into '{shell}'. Try fish, zsh, or bash."
+
+# General unexpected crash
+"zibi broke. That wasn't supposed to happen."
+"Something went wrong and zibi has no idea what."

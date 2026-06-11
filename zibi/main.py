@@ -526,6 +526,8 @@ def watch_command() -> None:
                     command="--watch new content detected",
                     replacements={"timestamp": timestamp, "preview": preview(current, 100)}
                 )
+                # Automatically save the clipboard change to history
+                _save_if_enabled(current, "clipboard")
 
     _run(action)
 

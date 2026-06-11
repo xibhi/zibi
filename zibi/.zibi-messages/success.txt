@@ -1,0 +1,93 @@
+# --copy
+"Snatched. zibi is holding it tight."
+"Locked in. zibi won't let go."
+"Yours. Well, zibi's. Same thing."
+
+# --copy --file
+"File robbed successfully. Contents are now hostage."
+"Ripped straight from the file. No survivors."
+
+# --paste
+(just print the content, no message needed)
+
+# --snatch
+"Snitched. Last command's output is in your hands."
+"Grabbed it before it disappeared. You're welcome."
+
+# --clear
+"Clipboard wiped. zibi remembers nothing. Like a goldfish."
+"Gone. Whatever it was, it never existed."
+
+# --pin
+"Pinned. zibi will guard this with its life."
+"Locked down. Not even --wipe can touch this one."
+
+# --fetch
+"Brought back from the dead. You're welcome."
+"Resurrected. Clipboard is alive again."
+
+# --kill
+"Erased. That entry never happened."
+"Gone forever. zibi has no memory of it."
+
+# --wipe
+"History burned to the ground. Pins survived the fire."
+"Purged. zibi is starting fresh. No regrets."
+
+# --share (termbin)
+"Yeeted to the internet. Here's your link:"
+"Uploaded. Go share it before it expires:"
+
+# --share (paste.rs)
+"Blasted to paste.rs. Catch it before it disappears:"
+"It's on the internet now. Good luck:"
+
+# --transform (upper)
+"SCREAMING ACTIVATED. Clipboard updated."
+
+# --transform (lower)
+"Whispering mode engaged. Clipboard updated."
+
+# --transform (trim)
+"Shaved clean. No more whitespace hanging around."
+
+# --transform (flip)
+".denrut pu edispu s'tI .detadpu draobpilC"
+
+# --transform (encode)
+"Encoded. Nobody knows what you copied now."
+
+# --transform (decode)
+"Decoded. Secrets revealed. Handle with care."
+
+# --transform (sanitize)
+"URL-safe and ugly. Clipboard updated."
+
+# --transform (humanize)
+"Humanized. You can actually read it now."
+
+# --transform (wordcount)
+"Word count: {n}  (zibi judged silently and said nothing)"
+
+# --transform (lines)
+"Line count: {n}  (zibi counted and kept its mouth shut)"
+
+# --init
+"Shell hooks installed. zibi is now watching your every command."
+"Done. Run zibi_run before any command you want snatched."
+
+# --watch running
+"zibi is watching. Press Ctrl+C to stop the surveillance."
+
+# --watch new content detected
+"[{timestamp}] Something changed: {preview}"
+
+# --stats header
+"zibi's report on your clipboard addiction:"
+
+# --log empty state
+"zibi's diary is empty. Nothing copied yet."
+
+# --count
+"zibi is hoarding {n} entries for you."
+
