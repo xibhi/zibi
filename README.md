@@ -33,7 +33,7 @@
 
 ```
 # Clone the repo. No, Ctrl+C won't copy this time.
-git clone https://github.com/sibhi/zibi.git
+git clone https://github.com/krreeshhh/zibi.git
 
 # Enter the zibiverse.
 cd zibi
