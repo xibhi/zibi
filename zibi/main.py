@@ -30,7 +30,7 @@ from .db import (
     wipe_all,
     wipe_unpinned,
 )
-from .hooks import LAST_OUTPUT_PATH, detect_shell, ensure_cache, hook_script
+from .hooks import LAST_OUTPUT_PATH, detect_shell, ensure_cache, hook_script, install_to_shell
 from .utils import (
     ZibiError,
     console,
@@ -341,14 +341,52 @@ def install_hooks_command(
     shell: str = typer.Option(
         "auto",
         "--shell",
-        help="Shell syntax to print: auto, bash, zsh, or fish.",
-    )
+        help="Shell syntax to install for: auto, bash, zsh, or fish.",
+    ),
+    persist: bool = typer.Option(
+        True,
+        "--persist/--no-persist",
+        help="Automatically write to shell config file (default: yes)",
+    ),
 ) -> None:
+    """Install zibi shell hooks for automatic command output capture.
+    
+    This command:
+    1. Detects your shell (bash, zsh, or fish)
+    2. Generates the appropriate hook script
+    3. Installs it to your shell's config file (~/.bashrc, ~/.zshrc, ~/.config/fish/conf.d/zibi.fish)
+    4. Makes zibi available from any location in your system
+    
+    After installation, restart your shell or run:
+        source ~/.bashrc      # for bash
+        source ~/.zshrc       # for zsh
+        source ~/.config/fish/conf.d/zibi.fish  # for fish
+    
+    Or simply open a new terminal window.
+    """
     if shell not in {"auto", "bash", "zsh", "fish"}:
         print_error("Shell must be one of: auto, bash, zsh, fish.")
         raise typer.Exit(1)
+    
     ensure_cache()
-    sys.stdout.write(hook_script(shell))
+    
+    if persist:
+        # Install to shell config file
+        success, message = install_to_shell(shell)
+        if success:
+            detected_shell = detect_shell() if shell == "auto" else shell
+            print_success(
+                f"{message}\n\n"
+                f"Shell: {detected_shell}\n"
+                f"To activate in current terminal: exec {detected_shell}",
+                command="--init"
+            )
+        else:
+            print_error(message)
+            raise typer.Exit(1)
+    else:
+        # Just print the script (for piping)
+        sys.stdout.write(hook_script(shell))
 
 
 @app.command("@log")

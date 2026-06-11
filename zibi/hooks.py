@@ -14,6 +14,64 @@ def ensure_cache() -> None:
     LAST_OUTPUT_PATH.touch(exist_ok=True)
 
 
+def get_shell_config_file(shell: str) -> Path:
+    """Get the config file path for a given shell."""
+    home = Path.home()
+    if shell == "fish":
+        config_dir = home / ".config" / "fish" / "conf.d"
+        return config_dir / "zibi.fish"
+    elif shell == "zsh":
+        return home / ".zshrc"
+    else:  # bash or default
+        return home / ".bashrc"
+
+
+def install_to_shell(shell: str = "auto") -> tuple[bool, str]:
+    """
+    Install zibi hooks to the shell config file.
+    
+    Returns:
+        (success: bool, message: str)
+    """
+    shell = detect_shell() if shell == "auto" else shell
+    
+    if shell not in {"bash", "zsh", "fish"}:
+        return False, f"Unsupported shell: {shell}"
+    
+    config_file = get_shell_config_file(shell)
+    script = hook_script(shell)
+    marker_start = "# === ZIBI START ==="
+    marker_end = "# === ZIBI END ==="
+    
+    # Ensure parent directory exists
+    config_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Read existing config (if it exists)
+    existing_content = ""
+    if config_file.exists():
+        existing_content = config_file.read_text(encoding="utf-8")
+    
+    # Check if already installed
+    if marker_start in existing_content:
+        # Remove old installation first
+        start_idx = existing_content.find(marker_start)
+        end_idx = existing_content.find(marker_end)
+        if end_idx != -1:
+            existing_content = (
+                existing_content[:start_idx] + 
+                existing_content[end_idx + len(marker_end):]
+            ).lstrip("\n")
+    
+    # Add new installation with markers
+    new_script = f"\n{marker_start}\n{script}{marker_end}\n"
+    new_content = existing_content + new_script
+    
+    # Write back to config file
+    config_file.write_text(new_content, encoding="utf-8")
+    
+    return True, f"✓ zibi installed to {config_file}"
+
+
 def hook_script(shell: str = "auto") -> str:
     shell = detect_shell() if shell == "auto" else shell
     if shell == "fish":
