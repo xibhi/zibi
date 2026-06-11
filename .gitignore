@@ -142,5 +142,7 @@ config.toml
 .cache/
 test_*.py
 test_*.txt
-success.txt
-error.txt
+
+# Message state tracking (user-specific)
+.zibi-messages/.message-state.json
+zibi/.zibi-messages/.message-state.json
