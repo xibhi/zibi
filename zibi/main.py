@@ -106,7 +106,7 @@ def _run(action) -> None:
     try:
         action()
     except ZibiError as exc:
-        print_error(str(exc))
+        print_error(str(exc), command=exc.command, replacements=exc.replacements)
         raise typer.Exit(1) from exc
     except KeyboardInterrupt:
         print_warning("Interrupted.")
@@ -299,7 +299,7 @@ def copy_command(
             content = sys.stdin.read()
             source = "pipe"
         else:
-            raise ZibiError("Nothing to copy. Provide text, use --file, or pipe content into zibi --copy.")
+            raise ZibiError("Nothing to copy. Provide text, use --file, or pipe content into zibi --copy.", command="--copy no input given")
         write_clipboard(content)
         _save_if_enabled(content, source)
         default_msg = f"Copied {len(content)} chars from {source}. Preview: \"{preview(content)}\""
@@ -364,7 +364,12 @@ def recall_command(index: int) -> None:
     def action() -> None:
         result = get_entry_by_index(index)
         if result is None:
-            raise ZibiError(_valid_range_message())
+            total = count_history()
+            raise ZibiError(
+                _valid_range_message(),
+                command="--fetch / recall index out of range",
+                replacements={"n": index, "max": total}
+            )
         _, entry = result
         write_clipboard(entry.content)
         console.print(f"[bold green]Recalled history entry {index}.[/]")
@@ -387,7 +392,12 @@ def pin_command(index: int) -> None:
     def action() -> None:
         result = get_entry_by_index(index)
         if result is None:
-            raise ZibiError(_valid_range_message())
+            total = count_history()
+            raise ZibiError(
+                _valid_range_message(),
+                command="--pin index out of range",
+                replacements={"n": index, "max": total}
+            )
         _, entry = result
         set_pinned(entry.id, True)
         default_msg = f'Pinned entry {index}. Preview: "{preview(entry.content)}"'
@@ -401,7 +411,12 @@ def delete_command(index: int) -> None:
     def action() -> None:
         result = get_entry_by_index(index)
         if result is None:
-            raise ZibiError(_valid_range_message())
+            total = count_history()
+            raise ZibiError(
+                _valid_range_message(),
+                command="--kill / delete index out of range",
+                replacements={"n": index, "max": total}
+            )
         _, entry = result
         if not Confirm.ask(
             f"Delete entry {index}? '{preview(entry.content)}' — gone forever. Sure?",

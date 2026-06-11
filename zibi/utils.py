@@ -21,7 +21,14 @@ err_console = Console(stderr=True)
 
 
 class ZibiError(Exception):
-    """User-facing zibi error shown without a Python traceback."""
+    """User-facing zibi error shown without a Python traceback.
+    
+    Can optionally include a command name for cycling error messages.
+    """
+    def __init__(self, message: str, command: str = None, replacements: dict = None):
+        super().__init__(message)
+        self.command = command
+        self.replacements = replacements or {}
 
 
 @contextlib.contextmanager
@@ -106,7 +113,8 @@ def render_qr_ascii(text: str) -> str:
         raise ZibiError(
             "QR codes are only supported for URLs/links.\n"
             "Current clipboard content is not a valid URL.\n"
-            "Please copy a link to your clipboard and try again."
+            "Please copy a link to your clipboard and try again.",
+            command="--qr clipboard is not a URL"
         )
     
     qr = qrcode.QRCode(border=1)
@@ -177,8 +185,28 @@ def top_words(contents: list[str], limit: int = 5) -> list[tuple[str, int]]:
     return counter.most_common(limit)
 
 
-def print_error(message: str) -> None:
-    err_console.print(Panel(str(message), title="[bold red]Error", border_style="red"))
+def print_error(message: str, command: str = None, replacements: dict = None) -> None:
+    """
+    Print an error message. If command is provided, use a cycling message instead.
+    
+    Args:
+        message: Default message to display (used if command cycling is not available)
+        command: Optional command name for cycling messages (e.g., "--qr clipboard is not a URL")
+        replacements: Optional dict for placeholder replacement
+    """
+    # Try to get a cycling message if command is provided
+    cycling_message = None
+    if command:
+        try:
+            from . import message_manager
+            cycling_message = message_manager.get_error_message(command, replacements)
+        except Exception:
+            # Fallback to default message if cycling system fails
+            pass
+    
+    # Use cycling message if available, otherwise use provided message
+    display_message = cycling_message if cycling_message else message
+    err_console.print(Panel(str(display_message), title="[bold red]Error", border_style="red"))
 
 
 def print_warning(message: str) -> None:
