@@ -75,6 +75,9 @@
 # --init
 "Shell hooks installed. zibi is now watching your every command."
 "Done. Run zibi_run before any command you want snatched."
+"Installation complete. Restart your shell and zibi will be everywhere."
+"Hooked into your shell. zibi is now omnipresent."
+"You can run zibi from any directory now. Welcome to the surveillance state."
 
 # --watch running
 "zibi is watching. Press Ctrl+C to stop the surveillance."
