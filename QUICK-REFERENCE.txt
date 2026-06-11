@@ -1,0 +1,88 @@
+# Quick Reference - Zibi Message System
+
+## Usage Patterns
+
+### Success Messages
+```powershell
+& '.\zibi-command.ps1' -Command '<command>' -OnSuccess 1
+```
+
+### Error Messages
+```powershell
+& '.\zibi-command.ps1' -Command '<command>' -OnSuccess 0 -ErrorType '<error-type>'
+```
+
+### Error Messages with Placeholders
+```powershell
+& '.\zibi-command.ps1' -Command '<command>' -OnSuccess 0 -ErrorType '<error-type>' -Data @{placeholder='value'}
+```
+
+## Common Examples
+
+| Task | Command |
+|------|---------|
+| Success: copy | `& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 1` |
+| Success: clear | `& '.\zibi-command.ps1' -Command '--clear' -OnSuccess 1` |
+| Success: share to termbin | `& '.\zibi-command.ps1' -Command '--share (termbin)' -OnSuccess 1` |
+| Error: no input given | `& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 0 -ErrorType 'no input given'` |
+| Error: file not found | `& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 0 -ErrorType '--file file not found' -Data @{path='test.txt'}` |
+| Error: index out of range | `& '.\zibi-command.ps1' -Command '--fetch' -OnSuccess 0 -ErrorType '/ recall index out of range' -Data @{n=5; max=3}` |
+| Error: unknown mode | `& '.\zibi-command.ps1' -Command '--transform' -OnSuccess 0 -ErrorType 'unknown mode' -Data @{mode='reverse'}` |
+| Error: clipboard empty | `& '.\zibi-command.ps1' -Command '--fetch' -OnSuccess 0 -ErrorType 'index out of range' -Data @{n=0; max=0}` |
+
+## Error Type Naming
+
+**For "/" commands**: Include the "/" in error type:
+```powershell
+# Correct
+-ErrorType '/ recall index out of range'
+
+# Also works (from error.txt line 15)
+-ErrorType 'index out of range'  # if alias exists
+```
+
+**For multi-word commands**: Include the full command in error type:
+```powershell
+# Correct
+-ErrorType '--file file not found'
+-ErrorType 'unknown mode'
+```
+
+## Available Placeholders
+
+Use these in the `-Data` hashtable:
+
+- `n` - Index number
+- `max` - Maximum entries
+- `path` - File path
+- `val` - Invalid value
+- `mode` - Transform mode
+- `query` - Search query
+
+## Reset States
+
+Clear all message cycling states to restart from first messages:
+```powershell
+Remove-Item 'x:\Downloads\zibi\.message-state.json'
+```
+
+## Message Cycling
+
+Each call cycles to the next message automatically:
+```powershell
+# First call
+& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 1
+# Output: "Snatched. zibi is holding it tight."
+
+# Second call
+& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 1
+# Output: "Locked in. zibi won't let go."
+
+# Third call
+& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 1
+# Output: "Yours. Well, zibi's. Same thing."
+
+# Fourth call (cycles back)
+& '.\zibi-command.ps1' -Command '--copy' -OnSuccess 1
+# Output: "Snatched. zibi is holding it tight."
+```

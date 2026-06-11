@@ -1,0 +1,10 @@
+{
+    "error:--transform unknown mode":  0,
+    "success:--copy":  1,
+    "success:--transform (upper)":  0,
+    "success:--share (termbin)":  1,
+    "error:--copy no input given":  1,
+    "error:--copy --file file not found":  0,
+    "success:--share (paste.rs)":  1,
+    "error:--fetch / recall index out of range":  2
+}
