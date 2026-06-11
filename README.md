@@ -33,7 +33,7 @@
 ### From Source (Development)
 
 ```
-git clone https://github.com/xibhi/zibi.git
+git clone https://github.com/krreeshhh/zibi.git
 cd zibi/
 python3 -m venv venv
 source venv/bin/activate
