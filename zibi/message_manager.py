@@ -17,6 +17,16 @@ SUCCESS_FILE = MESSAGES_DIR / "success.txt"
 ERROR_FILE = MESSAGES_DIR / "error.txt"
 STATE_FILE = MESSAGES_DIR / ".message-state.json"
 
+# Debug: Log the paths at module load time
+import os as _os
+if _os.environ.get("ZIBI_DEBUG"):
+    print(f"[DEBUG] message_manager loaded", file=sys.stderr)
+    print(f"[DEBUG]   __file__ = {Path(__file__)}", file=sys.stderr)
+    print(f"[DEBUG]   MESSAGES_DIR = {MESSAGES_DIR}", file=sys.stderr)
+    print(f"[DEBUG]   MESSAGES_DIR exists = {MESSAGES_DIR.exists()}", file=sys.stderr)
+    print(f"[DEBUG]   SUCCESS_FILE = {SUCCESS_FILE}", file=sys.stderr)
+    print(f"[DEBUG]   SUCCESS_FILE exists = {SUCCESS_FILE.exists()}", file=sys.stderr)
+
 
 def get_next_message(message_type: str, command: str, replacements: Optional[dict] = None) -> Optional[str]:
     """
@@ -40,6 +50,12 @@ def _get_message_fallback(message_type: str, command: str, replacements: Optiona
     """
     try:
         message_file = SUCCESS_FILE if message_type == "success" else ERROR_FILE
+        
+        # Debug: Log the paths being checked
+        import os
+        if os.environ.get("ZIBI_DEBUG"):
+            print(f"[DEBUG] Looking for message file: {message_file}", file=sys.stderr)
+            print(f"[DEBUG] File exists: {message_file.exists()}", file=sys.stderr)
         
         if not message_file.exists():
             return None
@@ -72,6 +88,9 @@ def _get_message_fallback(message_type: str, command: str, replacements: Optiona
     
     except Exception as e:
         # Silently fail - return None so zibi can use default message
+        import os
+        if os.environ.get("ZIBI_DEBUG"):
+            print(f"[DEBUG] Exception in _get_message_fallback: {e}", file=sys.stderr)
         return None
 
 
