@@ -30,7 +30,7 @@ from .db import (
     wipe_all,
     wipe_unpinned,
 )
-from .hooks import LAST_OUTPUT_PATH, detect_shell, ensure_cache, hook_script, install_to_shell
+from .hooks import LAST_OUTPUT_PATH, detect_shell, ensure_cache, hook_script, install_to_shell, install_system_wide, uninstall_system_wide, uninstall_shell_hooks, verify_installation
 from .utils import (
     ZibiError,
     console,
@@ -343,26 +343,33 @@ def install_hooks_command(
         "--shell",
         help="Shell syntax to install for: auto, bash, zsh, or fish.",
     ),
-    persist: bool = typer.Option(
+    system: bool = typer.Option(
         True,
-        "--persist/--no-persist",
-        help="Automatically write to shell config file (default: yes)",
+        "--system/--no-system",
+        help="Install zibi as system-wide command (default: yes)",
+    ),
+    shell_hooks: bool = typer.Option(
+        True,
+        "--hooks/--no-hooks",
+        help="Install shell hooks for output capture (default: yes)",
     ),
 ) -> None:
-    """Install zibi shell hooks for automatic command output capture.
+    """Complete zibi installation for system-wide access.
     
-    This command:
-    1. Detects your shell (bash, zsh, or fish)
-    2. Generates the appropriate hook script
-    3. Installs it to your shell's config file (~/.bashrc, ~/.zshrc, ~/.config/fish/conf.d/zibi.fish)
-    4. Makes zibi available from any location in your system
+    This command performs a complete installation:
+    1. Installs zibi as a system-wide command (/usr/local/bin/zibi or ~/.local/bin/zibi)
+    2. Installs shell integration hooks for your shell (bash/zsh/fish)
+    3. Makes zibi accessible from anywhere, any shell, any time
     
-    After installation, restart your shell or run:
-        source ~/.bashrc      # for bash
-        source ~/.zshrc       # for zsh
-        source ~/.config/fish/conf.d/zibi.fish  # for fish
+    After installation:
+    - Open a new terminal, or
+    - Run: exec bash (or zsh/fish)
     
-    Or simply open a new terminal window.
+    Then use zibi from any directory:
+        zibi --copy "text"
+        zibi --log
+        zibi --spy
+        cd /tmp && zibi --count
     """
     if shell not in {"auto", "bash", "zsh", "fish"}:
         print_error("Shell must be one of: auto, bash, zsh, fish.")
@@ -370,26 +377,142 @@ def install_hooks_command(
     
     ensure_cache()
     
-    if persist:
-        # Install to shell config file
+    results = []
+    errors = []
+    
+    # Step 1: Install system-wide command
+    if system:
+        console.print("[bold cyan]Installing zibi as system-wide command...[/]")
+        success, message = install_system_wide()
+        if success:
+            results.append(message)
+            console.print(f"[green]{message}[/]")
+        else:
+            errors.append(message)
+            console.print(f"[yellow]{message}[/]")
+    
+    # Step 2: Install shell hooks
+    if shell_hooks:
+        console.print("[bold cyan]Installing shell integration hooks...[/]")
         success, message = install_to_shell(shell)
         if success:
-            detected_shell = detect_shell() if shell == "auto" else shell
-            print_success(
-                f"{message}\n\n"
-                f"Shell: {detected_shell}\n"
-                f"To activate in current terminal: exec {detected_shell}",
-                command="--init"
-            )
+            results.append(message)
+            console.print(f"[green]{message}[/]")
         else:
-            print_error(message)
-            raise typer.Exit(1)
+            errors.append(message)
+            console.print(f"[yellow]{message}[/]")
+    
+    # Step 3: Verify installation
+    console.print("[bold cyan]Verifying installation...[/]")
+    verify_success, verify_msg = verify_installation()
+    if verify_success:
+        results.append(verify_msg)
+        console.print(f"[green]{verify_msg}[/]")
     else:
-        # Just print the script (for piping)
-        sys.stdout.write(hook_script(shell))
+        # Verification failed but installation might still work after shell restart
+        console.print(f"[yellow]{verify_msg}[/]")
+    
+    # Final status
+    if results:
+        detected_shell = detect_shell() if shell == "auto" else shell
+        summary = "\n".join(results)
+        print_success(
+            f"{summary}\n\n"
+            f"✓ Installation complete!\n"
+            f"Shell: {detected_shell}\n\n"
+            f"To activate now:\n"
+            f"  exec {detected_shell}\n\n"
+            f"Or open a new terminal and use zibi from anywhere!",
+            command="--init"
+        )
+        
+        if errors:
+            console.print("\n[yellow]Warnings:[/]")
+            for error in errors:
+                console.print(f"[yellow]⚠ {error}[/]")
+    else:
+        print_error("Installation failed. Check messages above.")
+        raise typer.Exit(1)
 
 
-@app.command("@log")
+@app.command("@uninstall")
+def uninstall_command(
+    shell: str = typer.Option(
+        "auto",
+        "--shell",
+        help="Shell to uninstall from: auto, bash, zsh, or fish.",
+    ),
+    system: bool = typer.Option(
+        True,
+        "--system/--no-system",
+        help="Remove system-wide command (default: yes)",
+    ),
+    shell_hooks: bool = typer.Option(
+        True,
+        "--hooks/--no-hooks",
+        help="Remove shell hooks (default: yes)",
+    ),
+) -> None:
+    """Uninstall zibi from your system.
+    
+    This command removes:
+    1. The system-wide zibi command
+    2. Shell integration hooks from bash/zsh/fish configs
+    
+    You can selectively remove components with --system/--no-system and --hooks/--no-hooks.
+    
+    Example:
+        zibi --uninstall              # Remove everything
+        zibi --uninstall --no-system  # Keep command, remove hooks only
+    """
+    if shell not in {"auto", "bash", "zsh", "fish"}:
+        print_error("Shell must be one of: auto, bash, zsh, fish.")
+        raise typer.Exit(1)
+    
+    results = []
+    errors = []
+    
+    # Step 1: Remove system-wide command
+    if system:
+        console.print("[bold cyan]Removing system-wide zibi command...[/]")
+        success, message = uninstall_system_wide()
+        if success:
+            results.append(message)
+            console.print(f"[green]{message}[/]")
+        else:
+            errors.append(message)
+            console.print(f"[yellow]{message}[/]")
+    
+    # Step 2: Remove shell hooks
+    if shell_hooks:
+        console.print("[bold cyan]Removing shell integration hooks...[/]")
+        success, message = uninstall_shell_hooks(shell)
+        if success:
+            results.append(message)
+            console.print(f"[green]{message}[/]")
+        else:
+            errors.append(message)
+            console.print(f"[yellow]{message}[/]")
+    
+    # Final status
+    if results:
+        summary = "\n".join(results)
+        print_info(
+            f"{summary}\n\n"
+            f"✓ Uninstallation complete!\n"
+            f"zibi has been removed from your system.",
+            command="--uninstall"
+        )
+        
+        if errors:
+            console.print("\n[yellow]Warnings:[/]")
+            for error in errors:
+                console.print(f"[yellow]⚠ {error}[/]")
+    else:
+        console.print("[yellow]Nothing to uninstall.[/]")
+
+
+
 def history_command(limit: int = typer.Option(20, "--limit", min=1, help="Number of entries to show.")) -> None:
     entries = list_history(limit)
     if not entries:
