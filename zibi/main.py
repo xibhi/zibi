@@ -302,7 +302,8 @@ def copy_command(
             raise ZibiError("Nothing to copy. Provide text, use --file, or pipe content into zibi --copy.")
         write_clipboard(content)
         _save_if_enabled(content, source)
-        print_success(f"Copied {len(content)} chars from {source}. Preview: \"{preview(content)}\"")
+        default_msg = f"Copied {len(content)} chars from {source}. Preview: \"{preview(content)}\""
+        print_success(default_msg, command="--copy")
 
     _run(action)
 
@@ -389,7 +390,8 @@ def pin_command(index: int) -> None:
             raise ZibiError(_valid_range_message())
         _, entry = result
         set_pinned(entry.id, True)
-        print_success(f'Pinned entry {index}. Preview: "{preview(entry.content)}"')
+        default_msg = f'Pinned entry {index}. Preview: "{preview(entry.content)}"'
+        print_success(default_msg, command="--pin")
 
     _run(action)
 
@@ -408,7 +410,7 @@ def delete_command(index: int) -> None:
             print_warning("Entry was not deleted.")
             return
         delete_history_entry(entry.id)
-        print_success(f"Deleted entry {index}.")
+        print_success(f"Deleted entry {index}.", command="--kill")
 
     _run(action)
 
@@ -443,7 +445,8 @@ def transform_command(mode: Optional[str] = typer.Argument(None)) -> None:
             return
         write_clipboard(transformed)
         _save_if_enabled(transformed, "manual")
-        print_success(f'Transformed clipboard with "{mode}" ({len(transformed)} chars). Preview: "{preview(transformed)}"')
+        default_msg = f'Transformed clipboard with "{mode}" ({len(transformed)} chars). Preview: "{preview(transformed)}"'
+        print_success(default_msg, command="--transform")
 
     _run(action)
 
@@ -482,7 +485,11 @@ def share_command() -> None:
                     raise
         write_clipboard(url)
         _save_if_enabled(url, "share")
-        print_success(f"Shared clipboard text and copied URL:\n{url}")
+        default_msg = f"Shared clipboard text and copied URL:\n{url}"
+        # Determine which share service for the message key
+        share_service = "termbin" if cfg.share_service == "termbin" else "paste.rs"
+        command = f"--share ({share_service})"
+        print_success(default_msg, command=command)
 
     _run(action)
 
@@ -518,7 +525,8 @@ def clear_command() -> None:
         # BUG FIX: clear live clipboard and non-pinned history while preserving pins.
         write_clipboard("")
         deleted = wipe_unpinned()
-        print_success(f"Clipboard cleared. Deleted {deleted} non-pinned history entries; kept {pinned} pinned.")
+        default_msg = f"Clipboard cleared. Deleted {deleted} non-pinned history entries; kept {pinned} pinned."
+        print_success(default_msg, command="--clear")
 
     _run(action)
 
@@ -535,7 +543,8 @@ def wipe_command() -> None:
     # BUG FIX: wipe removes the live clipboard and every history entry, including pins.
     write_clipboard("")
     deleted = wipe_all()
-    print_success(f"Clipboard cleared. Deleted all {deleted} history entries.")
+    default_msg = f"Clipboard cleared. Deleted all {deleted} history entries."
+    print_success(default_msg, command="--wipe")
 
 
 @app.command("@count")
@@ -604,7 +613,8 @@ def config_command() -> None:
         share_service=share,
     )
     save_config(new_cfg)
-    print_success(f"Configuration saved to {CONFIG_PATH}")
+    default_msg = f"Configuration saved to {CONFIG_PATH}"
+    print_success(default_msg, command="--config")
 
 
 @app.command("@build")

@@ -1,0 +1,151 @@
+"""
+Zibi Message Manager - Integrates cycling success/error messages with zibi commands.
+
+This module provides message cycling functionality for zibi, rotating through
+multiple success and error messages for each command.
+"""
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+from typing import Optional
+
+# Messages directory - should be in the parent of zibi module
+MESSAGES_DIR = Path(__file__).parent.parent / ".zibi-messages"
+SUCCESS_FILE = MESSAGES_DIR / "success.txt"
+ERROR_FILE = MESSAGES_DIR / "error.txt"
+STATE_FILE = MESSAGES_DIR / ".message-state.json"
+
+
+def get_next_message(message_type: str, command: str, replacements: Optional[dict] = None) -> Optional[str]:
+    """
+    Get the next cycling message for a command.
+    
+    Args:
+        message_type: "success" or "error"
+        command: Command name (e.g., "--copy", "--fetch / recall index out of range")
+        replacements: Dict of placeholder replacements (e.g., {"n": 5, "max": 3})
+    
+    Returns:
+        The next cycling message for this command, or None if not found
+    """
+    # Use direct file parsing (fallback method is more reliable)
+    return _get_message_fallback(message_type, command, replacements)
+
+
+def _get_message_fallback(message_type: str, command: str, replacements: Optional[dict] = None) -> Optional[str]:
+    """
+    Fallback method to get messages by parsing files directly.
+    """
+    try:
+        message_file = SUCCESS_FILE if message_type == "success" else ERROR_FILE
+        
+        if not message_file.exists():
+            return None
+        
+        messages_dict = _parse_messages_file(message_file)
+        messages = messages_dict.get(command, [])
+        
+        if not messages:
+            return None
+        
+        # Get current index from state
+        state = _load_state()
+        key = f"{message_type}:{command}"
+        current_index = state.get(key, 0)
+        
+        # Get message
+        message = messages[current_index]
+        
+        # Update state
+        next_index = (current_index + 1) % len(messages)
+        state[key] = next_index
+        _save_state(state)
+        
+        # Replace placeholders
+        if replacements:
+            for placeholder, value in replacements.items():
+                message = message.replace(f"{{{placeholder}}}", str(value))
+        
+        return message
+    
+    except Exception as e:
+        # Silently fail - return None so zibi can use default message
+        return None
+
+
+def _parse_messages_file(filepath: Path) -> dict:
+    """Parse a messages file and return a dict of command -> [messages]."""
+    messages = {}
+    current_command = None
+    current_messages = []
+    
+    try:
+        content = filepath.read_text(encoding="utf-8")
+        
+        for line in content.split("\n"):
+            line = line.strip()
+            
+            if line.startswith("#"):
+                # Store previous command
+                if current_command:
+                    messages[current_command] = current_messages
+                    
+                    # Handle commands with "/" - create aliases
+                    if "/" in current_command:
+                        parts = current_command.split("/")
+                        for part in parts:
+                            part = part.strip()
+                            if part:
+                                messages[part] = current_messages
+                
+                current_command = line[1:].strip()
+                current_messages = []
+            
+            elif line.startswith('"') and line.endswith('"'):
+                current_messages.append(line[1:-1])
+        
+        # Store last command
+        if current_command:
+            messages[current_command] = current_messages
+            if "/" in current_command:
+                parts = current_command.split("/")
+                for part in parts:
+                    part = part.strip()
+                    if part:
+                        messages[part] = current_messages
+    
+    except Exception:
+        pass
+    
+    return messages
+
+
+def _load_state() -> dict:
+    """Load message state from JSON file."""
+    try:
+        if STATE_FILE.exists():
+            return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    return {}
+
+
+def _save_state(state: dict) -> None:
+    """Save message state to JSON file."""
+    try:
+        STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
+
+def get_success_message(command: str, replacements: Optional[dict] = None) -> Optional[str]:
+    """Get a cycling success message for a command."""
+    return get_next_message("success", command, replacements)
+
+
+def get_error_message(command: str, replacements: Optional[dict] = None) -> Optional[str]:
+    """Get a cycling error message for a command."""
+    return get_next_message("error", command, replacements)

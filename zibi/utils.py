@@ -185,8 +185,28 @@ def print_warning(message: str) -> None:
     console.print(Panel(str(message), title="[bold yellow]Warning", border_style="yellow"))
 
 
-def print_success(message: str) -> None:
-    console.print(Panel(str(message), title="[bold green]Success", border_style="green"))
+def print_success(message: str, command: str = None, replacements: dict = None) -> None:
+    """
+    Print a success message. If command is provided, use a cycling message instead.
+    
+    Args:
+        message: Default message to display (used if command cycling is not available)
+        command: Optional command name for cycling messages (e.g., "--copy")
+        replacements: Optional dict for placeholder replacement
+    """
+    # Try to get a cycling message if command is provided
+    cycling_message = None
+    if command:
+        try:
+            from . import message_manager
+            cycling_message = message_manager.get_success_message(command, replacements)
+        except Exception:
+            # Fallback to default message if cycling system fails
+            pass
+    
+    # Use cycling message if available, otherwise use provided message
+    display_message = cycling_message if cycling_message else message
+    console.print(Panel(str(display_message), title="[bold green]Success", border_style="green"))
 
 
 def read_text_file(path: Path, original_path: str | None = None) -> str:
