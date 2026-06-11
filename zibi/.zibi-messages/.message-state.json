@@ -1,5 +1,5 @@
 {
   "success:--copy": 0,
   "error:--fetch / recall index out of range": 2,
-  "error:--qr clipboard is not a URL": 0
+  "error:--qr clipboard is not a URL": 3
 }

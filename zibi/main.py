@@ -37,6 +37,7 @@ from .utils import (
     err_console,
     preview,
     print_error,
+    print_info,
     print_success,
     print_warning,
     read_clipboard,
@@ -354,7 +355,7 @@ def install_hooks_command(
 def history_command(limit: int = typer.Option(20, "--limit", min=1, help="Number of entries to show.")) -> None:
     entries = list_history(limit)
     if not entries:
-        print_warning("zibi's diary is empty. Nothing copied yet.")
+        print_info("zibi's diary is empty. Nothing copied yet.", command="--log empty state")
         return
     console.print(_history_table(entries))
 
@@ -513,14 +514,18 @@ def share_command() -> None:
 def watch_command() -> None:
     def action() -> None:
         last = read_clipboard()
-        console.print("[bold cyan]zibi is watching. Press Ctrl+C to stop the surveillance.[/]")
+        print_info("", command="--watch running")
         while True:
             time.sleep(0.75)
             current = read_clipboard()
             if current != last:
                 last = current
                 timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-                console.print(f"[dim][{timestamp}][/] Something changed: {preview(current, 100)}")
+                print_info(
+                    f"[dim][{timestamp}][/] Something changed: {preview(current, 100)}",
+                    command="--watch new content detected",
+                    replacements={"timestamp": timestamp, "preview": preview(current, 100)}
+                )
 
     _run(action)
 
@@ -565,7 +570,7 @@ def wipe_command() -> None:
 @app.command("@count")
 def count_command() -> None:
     total = count_history()
-    console.print(f"zibi is hoarding {total} entries for you.")
+    print_info(f"zibi is hoarding {total} entries for you.", command="--count", replacements={"n": total})
 
 
 @app.command("@top")
