@@ -120,7 +120,7 @@ zibi --qr
 | `zibi --copy --file <path>` | Steal directly from a file instead. |
 | `zibi --copy` (stdin) | Pipe content straight into zibi. |
 | `zibi --paste` | Spit out whatever zibi is currently sitting on. |
-| `zibi --snatch` | Snitch on the last command you ran via zibi_run. |
+| `zibi --snatch` | Snitch on the last command you ran via zibi-run. |
 | `zibi --init` | Teach your shell to spy for zibi. |
 | `zibi --log` | Scroll through zibi's diary of everything you copied. |
 | `zibi --log --limit <n>` | Show last N entries. |

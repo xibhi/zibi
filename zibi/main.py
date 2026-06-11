@@ -140,17 +140,17 @@ def _valid_range_message() -> str:
 
 
 def _copyp_missing_message() -> str:
-    if detect_shell() == "fish":
-        return (
-            "No previous command output found.\n"
-            "Run commands through: zibi_run <command>\n"
-            "Install fish hook with: zibi --init --shell fish > ~/.config/fish/conf.d/zibi.fish"
-        )
-    return (
-        "No previous command output found.\n"
-        "Run commands through: zibi_run <command>\n"
-        "Enable hooks with: source <(zibi --init)"
-    )
+     if detect_shell() == "fish":
+         return (
+             "No previous command output found.\n"
+             "Run commands through: zibi-run <command>\n"
+             "Install fish hook with: zibi --init --shell fish > ~/.config/fish/conf.d/zibi.fish"
+         )
+     return (
+         "No previous command output found.\n"
+         "Run commands through: zibi-run <command>\n"
+         "Enable hooks with: source <(zibi --init)"
+     )
 
 
 def _transform_modes_panel() -> Panel:
@@ -175,9 +175,9 @@ def _help_command_table() -> Table:
     table.add_column("Command", style="bold magenta", no_wrap=True)
     table.add_column("Description", style="white")
     rows = [
-        ("--copy", "Steal text from your fingers and hold it hostage."),
-        ("--paste", "Spit out whatever zibi is currently sitting on."),
-        ("--copyp", "Snitch on the last command you ran via zibi_run."),
+         ("--copy", "Steal text from your fingers and hold it hostage."),
+         ("--paste", "Spit out whatever zibi is currently sitting on."),
+         ("--copyp", "Snitch on the last command you ran via zibi-run."),
         ("--install-hooks", "Teach your shell to spy for zibi."),
         ("--history", "Scroll through zibi's diary of everything you copied."),
         ("--recall", "Resurrect a dead clipboard entry back to life."),
@@ -429,9 +429,9 @@ def install_hooks_command(
             f"  exec fish                 # fish\n\n"
             f"Or simply open a new terminal!\n\n"
             f"Then use zibi from anywhere:\n"
-            f"  zibi --count\n"
-            f"  zibi_run pytest tests/\n"
-            f"  zibi --snatch",
+             f"  zibi --count\n"
+             f"  zibi-run pytest tests/\n"
+             f"  zibi --snatch",
             command="--init"
         )
         
