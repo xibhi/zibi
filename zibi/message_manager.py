@@ -11,8 +11,33 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-# Messages directory - should be in the parent of zibi module
-MESSAGES_DIR = Path(__file__).parent.parent / ".zibi-messages"
+def _find_messages_dir() -> Path:
+    """
+    Find the .zibi-messages directory by checking multiple possible locations.
+    
+    This is necessary because the directory location varies depending on installation method:
+    - Development install (pip install -e): points to source directory
+    - Normal install: .zibi-messages is inside the zibi package
+    - Fallback: user's home directory
+    """
+    possible_locations = [
+        # First: Inside the zibi package (preferred - works for all installations)
+        Path(__file__).parent / ".zibi-messages",
+        # Second: In the parent directory (legacy, for backward compatibility)
+        Path(__file__).parent.parent / ".zibi-messages",
+        # Third: User's home directory (fallback)
+        Path.home() / ".zibi-messages",
+    ]
+    
+    for location in possible_locations:
+        if location.exists():
+            return location
+    
+    # Return the first location (inside package) as the default
+    return possible_locations[0]
+
+
+MESSAGES_DIR = _find_messages_dir()
 SUCCESS_FILE = MESSAGES_DIR / "success.txt"
 ERROR_FILE = MESSAGES_DIR / "error.txt"
 STATE_FILE = MESSAGES_DIR / ".message-state.json"
