@@ -205,7 +205,7 @@ def _help_command_table() -> Table:
 def show_help() -> None:
     # ASCII-safe logo for Windows compatibility (Unicode blocks don't work on Windows)
     logo_text = """          ███  █████      ███ 
-              ░░░  ░░███      ░░░  
+         ░░░  ░░███      ░░░  
  █████████ ███ ░███████  ████ 
 ░█░░░░███ ░░██ ░███░░███░███ 
 ░   ███░   ░███ ░███ ░███ ░███ 
