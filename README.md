@@ -19,7 +19,7 @@
 - **Persistent History** — Every copy is saved to a local SQLite database with source tagging (`manual`, `pipe`, `file`, `snatch`).
 - **Snatch Previous Command Output** — `--snatch` captures the output of the last terminal command and copies it straight to your clipboard. No selecting, no scrolling.
 - **Pinning** — Pin any history entry so it never gets deleted during `--wipe`.
-- **Transform** — Mutate clipboard content in place. Base64, URL encode/decode, uppercase, reverse, trim, flip, and more.
+- **Transform** — Mutate clipboard content in place. Encode, Decode, Sanitize, Humanize, uppercase, lowercase, flip, trim, and more.
 - **Live Watch** — Monitor clipboard changes in real time with timestamps.
 - **Share** — Upload clipboard content to a public paste URL and get a shareable link in one command.
 - **QR Codes** — Render any URL in your clipboard as a scannable ASCII QR code directly in the terminal. Links only.
@@ -93,19 +93,6 @@ zibi --paste
 zibi-run ls -la
 zibi --snatch
 
-# View history
-zibi --log
-
-# Fetch entry number 3 back to clipboard
-zibi --fetch 3
-
-# Transform clipboard to base64
-zibi --transform encode
-
-# Share clipboard as a paste link
-zibi --yeet
-
-# Render clipboard URL as a QR code
 zibi --qr
 ```
 

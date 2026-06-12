@@ -15,8 +15,8 @@
 "Grabbed it before it disappeared. You're welcome."
 
 # --clear
-"Clipboard wiped. zibi remembers nothing. Like a goldfish."
-"Gone. Whatever it was, it never existed."
+"zibi's brain has been bleached. Pinned memories remain."
+"Clipboard history swept under the rug. Pinned items survived the sweep."
 
 # --pin
 "Pinned. zibi will guard this with its life."
@@ -31,16 +31,16 @@
 "Gone forever. zibi has no memory of it."
 
 # --wipe
-"History burned to the ground. Pins survived the fire."
-"Purged. zibi is starting fresh. No regrets."
+"Total reset. Not even zibi remembers what you did."
+"Everything is gone. Even your pinned secrets have been vaporized."
 
 # --share (termbin)
-"Yeeted to the internet. Here's your link:"
-"Uploaded. Go share it before it expires:"
+"Yeeted to the internet. Here's your link:\n{url}"
+"Uploaded. Go share it before it expires:\n{url}"
 
 # --share (paste.rs)
-"Blasted to paste.rs. Catch it before it disappears:"
-"It's on the internet now. Good luck:"
+"Blasted to paste.rs. Catch it before it disappears:\n{url}"
+"It's on the internet now. Good luck:\n{url}"
 
 # --transform (upper)
 "SCREAMING ACTIVATED. Clipboard updated."

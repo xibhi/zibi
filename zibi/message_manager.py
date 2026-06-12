@@ -148,7 +148,7 @@ def _parse_messages_file(filepath: Path) -> dict:
                 current_messages = []
             
             elif line.startswith('"') and line.endswith('"'):
-                current_messages.append(line[1:-1])
+                current_messages.append(line[1:-1].replace("\\n", "\n"))
         
         # Store last command
         if current_command:

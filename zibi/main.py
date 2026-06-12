@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import platform
 import sys
@@ -63,11 +63,11 @@ TRANSFORM_MODES = [
     ("upper", "SCREAM YOUR CLIPBOARD AT EVERYONE."),
     ("lower", "whisper your clipboard like a coward."),
     ("trim", "Shave the whitespace off both ends."),
-    ("reverse", ".sdrawkcab ti daer ot enoemos ecrof"),
-    ("base64", "Encode it so nobody knows what you copied."),
-    ("unbase64", "Decode what someone tried to hide from you."),
-    ("urlencode", "Make it URL-safe and absolutely hideous."),
-    ("urldecode", "Undo the ugly and read it like a human being."),
+    ("flip", ".sdrawkcab ti daer ot enoemos ecrof"),
+    ("encode", "Encode it so nobody knows what you copied."),
+    ("decode", "Decode what someone tried to hide from you."),
+    ("sanitize", "Make it URL-safe and absolutely hideous."),
+    ("humanize", "Undo the ugly and read it like a human being."),
     ("wordcount", "Counts your words. Touches nothing. Just judges."),
     ("lines", "Counts your lines. Silent. Watchful. Does not copy."),
 ]
@@ -522,6 +522,7 @@ def uninstall_command(
 
 
 
+@app.command("@log")
 def history_command(limit: int = typer.Option(20, "--limit", min=1, help="Number of entries to show.")) -> None:
     entries = list_history(limit)
     if not entries:
@@ -589,6 +590,11 @@ def delete_command(index: int) -> None:
                 replacements={"n": index, "max": total}
             )
         _, entry = result
+        if entry.pinned:
+            raise ZibiError(
+                "That one is pinned. zibi refuses to touch it.",
+                command="--kill / delete trying to delete a pinned item",
+            )
         if not Confirm.ask(
             f"Delete entry {index}? '{preview(entry.content)}' — gone forever. Sure?",
             default=False,
@@ -632,7 +638,7 @@ def transform_command(mode: Optional[str] = typer.Argument(None)) -> None:
         write_clipboard(transformed)
         _save_if_enabled(transformed, "manual")
         default_msg = f'Transformed clipboard with "{mode}" ({len(transformed)} chars). Preview: "{preview(transformed)}"'
-        print_success(default_msg, command="--transform")
+        print_success(default_msg, command=f"--transform ({mode})")
 
     _run(action)
 
@@ -675,7 +681,7 @@ def share_command() -> None:
         # Determine which share service for the message key
         share_service = "termbin" if cfg.share_service == "termbin" else "paste.rs"
         command = f"--share ({share_service})"
-        print_success(default_msg, command=command)
+        print_success(default_msg, command=command, replacements={"url": url})
 
     _run(action)
 
@@ -864,6 +870,25 @@ def main() -> None:
     if argv and argv[0] in command_map:
         argv[0] = command_map[argv[0]]
         sys.argv = [sys.argv[0]] + argv
+    
+    class Redirector:
+        def __init__(self, original_stream):
+            self.original_stream = original_stream
+
+        def write(self, s):
+            for user_cmd, internal_cmd in command_map.items():
+                s = s.replace(internal_cmd, user_cmd)
+            self.original_stream.write(s)
+
+        def flush(self):
+            self.original_stream.flush()
+
+        def __getattr__(self, name):
+            return getattr(self.original_stream, name)
+
+    sys.stderr = Redirector(sys.stderr)
+    if not (argv and argv[0] in {"@paste", "@top"}):
+        sys.stdout = Redirector(sys.stdout)
     
     app()
 

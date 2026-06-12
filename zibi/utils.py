@@ -84,26 +84,26 @@ def transform_text(text: str, mode: str) -> str:
         return text.lower()
     if mode == "trim":
         return text.strip()
-    if mode == "reverse":
+    if mode == "flip":
         return text[::-1]
-    if mode == "base64":
+    if mode == "encode":
         return base64.b64encode(text.encode("utf-8")).decode("ascii")
-    if mode == "unbase64":
+    if mode == "decode":
         try:
             return base64.b64decode(text.encode("ascii"), validate=True).decode("utf-8")
         except Exception as exc:
             raise ZibiError("Clipboard content is not valid UTF-8 base64 data.") from exc
-    if mode == "urlencode":
+    if mode == "sanitize":
         return urllib.parse.quote(text)
-    if mode == "urldecode":
+    if mode == "humanize":
         return urllib.parse.unquote(text)
     if mode == "lines":
         return str(0 if text == "" else len(text.splitlines()))
     if mode == "wordcount":
         return str(len(re.findall(r"\b\w+\b", text)))
     raise ZibiError(
-        "Unknown transform mode. Use one of: upper, lower, trim, reverse, base64, "
-        "unbase64, urlencode, urldecode, lines, wordcount."
+        "Unknown transform mode. Use one of: upper, lower, trim, flip, encode, "
+        "decode, sanitize, humanize, lines, wordcount."
     )
 
 
