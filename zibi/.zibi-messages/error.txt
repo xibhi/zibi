@@ -23,11 +23,15 @@
 
 # --kill / delete trying to delete a pinned item
 "That one is pinned. zibi refuses to touch it."
-"Pinned entries are untouchable. Use --pin to unpin it first."
+"Pinned entries are untouchable. Use --pin to --unpin it first."
 
 # --pin index out of range
 "Index {n} doesn't exist. Pin something that's actually there."
 "zibi checked the history. No entry at {n}."
+
+# --unpin index out of range
+"Index {n} doesn't exist. Unpin something that's actually there."
+"That entry is gone or never pinned. Try --log or --pins first."
 
 # --fetch index not a number
 "That's not an index. zibi needs a number, not '{val}'."

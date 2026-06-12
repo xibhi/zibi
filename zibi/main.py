@@ -127,7 +127,7 @@ def _history_table(entries, *, title: str = "Clipboard History", enumerate_from_
     index_by_id = {entry.id: idx for idx, entry in enumerate(all_entries, start=1)}
     for local_idx, entry in enumerate(entries, start=1):
         idx = index_by_id.get(entry.id, local_idx) if enumerate_from_latest else local_idx
-        pin = "ðŸ“Œ " if entry.pinned else ""
+        pin = "⭐ " if entry.pinned else ""
         table.add_row(str(idx), pin + preview(entry.content, 60), entry.source, entry.created_at)
     return table
 
@@ -205,7 +205,7 @@ def _help_command_table() -> Table:
 def show_help() -> None:
     # ASCII-safe logo for Windows compatibility (Unicode blocks don't work on Windows)
     logo_text = """          ███  █████      ███ 
-         ░░░  ░░███      ░░░  
+          ░░░  ░░███      ░░░  
  █████████ ███ ░███████  ████ 
 ░█░░░░███ ░░██ ░███░░███░███ 
 ░   ███░   ░███ ░███ ░███ ░███ 
@@ -233,6 +233,7 @@ def show_help() -> None:
         ("--fetch <index>", "Resurrect a dead clipboard entry back to life."),
         ("--grep", "Dig through the graveyard for something specific."),
         ("--pin <index>", "Tell zibi this one is too important to ever forget."),
+        ("--unpin <index>", "Free an entry from zibi's eternal memory."),
         ("--pins", "Show everything zibi has sworn to never forget."),
         ("--qr", "Turn your clipboard links into a scannable square of chaos."),
         ("--yeet", "Yeet your clipboard to the internet. Get a link back."),
@@ -578,6 +579,27 @@ def pin_command(index: int) -> None:
     _run(action)
 
 
+@app.command("@unpin")
+def unpin_command(index: int) -> None:
+    def action() -> None:
+        result = get_entry_by_index(index)
+        if result is None:
+            total = count_history()
+            raise ZibiError(
+                _valid_range_message(),
+                command="--unpin index out of range",
+                replacements={"n": index, "max": total}
+            )
+        _, entry = result
+        if not entry.pinned:
+            raise ZibiError(f'Entry {index} is not pinned. Preview: "{preview(entry.content)}"', command="--unpin")
+        set_pinned(entry.id, False)
+        default_msg = f'Unpinned entry {index}. Preview: "{preview(entry.content)}"'
+        print_success(default_msg, command="--unpin")
+
+    _run(action)
+
+
 @app.command("@kill")
 def delete_command(index: int) -> None:
     def action() -> None:
@@ -722,7 +744,7 @@ def clear_command() -> None:
         pinned = len(list_history(pinned_only=True))
         deletable = total - pinned
         if not Confirm.ask(
-            "This will empty the clipboard. Whatever is in there, gone. Sure?",
+            "This will burn ALL non-pinned history. {total} entries gone forever. Sure?",
             default=False,
         ):
             print_warning("Clipboard and history were not changed.")
@@ -740,7 +762,7 @@ def clear_command() -> None:
 def wipe_command() -> None:
     total = count_history()
     if not Confirm.ask(
-        f"This will burn ALL non-pinned history. {total} entries gone forever. Sure?",
+        f"This will empty the clipboard. Whatever is in there, gone. Sure?",
         default=False,
     ):
         print_warning("Clipboard and history were not changed.")
@@ -851,6 +873,7 @@ def main() -> None:
         "--fetch": "@fetch",
         "--grep": "@grep",
         "--pin": "@pin",
+        "--unpin": "@unpin",
         "--pins": "@pins",
         "--kill": "@kill",
         "--transform": "@transform",

@@ -22,6 +22,10 @@
 "Pinned. zibi will guard this with its life."
 "Locked down. Not even --wipe can touch this one."
 
+# --unpin
+"Unpinned. zibi's protection is removed."
+"Released from eternal memory. You can now delete it if you want."
+
 # --fetch
 "Brought back from the dead. You're welcome."
 "Resurrected. Clipboard is alive again."
