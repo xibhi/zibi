@@ -18,7 +18,7 @@
 
 - **Persistent History** — Every copy is saved to a local SQLite database with source tagging (`manual`, `pipe`, `file`, `snatch`).
 - **Snatch Previous Command Output** — `--snatch` captures the output of the last terminal command and copies it straight to your clipboard. No selecting, no scrolling.
-- **Pinning** — Pin any history entry so it never gets deleted during `--wipe`.
+- **Pinning** — Pin any history entry so it never gets deleted during `--clear`.
 - **Transform** — Mutate clipboard content in place. Encode, Decode, Sanitize, Humanize, uppercase, lowercase, flip, trim, and more.
 - **Live Watch** — Monitor clipboard changes in real time with timestamps.
 - **Share** — Upload clipboard content to a public paste URL and get a shareable link in one command.
