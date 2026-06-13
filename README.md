@@ -31,7 +31,7 @@
 
 ### From Source (Development)
 
-```
+```bash
 # Clone the repo. No, Ctrl+C won't copy this time.
 git clone https://github.com/xibhi/zibi.git
 
@@ -93,8 +93,6 @@ zibi --paste
 # Copy last command's output
 zibi-run ls -la
 zibi --snatch
-
-zibi --qr
 ```
 
 ---
@@ -114,12 +112,13 @@ zibi --qr
 | `zibi --log --limit <n>` | Show last N entries. |
 | `zibi --fetch <index>` | Resurrect a dead clipboard entry back to life. |
 | `zibi --grep <query>` | Dig through the graveyard for something specific. |
-| `zibi --pin <index>` | Tell zibi this one is too important to ever forget. |
+| `zibi --pin [index]` | Tell zibi this one is too important to ever forget. |
+| `zibi --unpin [index]` | Free an entry from zibi's eternal memory. |
 | `zibi --pins` | Show everything zibi has sworn to never forget. |
 | `zibi --qr` | Turn your clipboard links into a scannable square of chaos. Links only. |
 | `zibi --yeet` | Yeet your clipboard to the internet. Get a link back. |
 | `zibi --spy` | Stare at your clipboard like a paranoid security guard. |
-| `zibi --kill <index>` | Erase one embarrassing entry from the record. |
+| `zibi --kill [index]` | Erase one embarrassing entry from the record. |
 | `zibi --clear` | Burn the history down. Pins survive the fire. |
 | `zibi --wipe` | Wipe the clipboard clean. Pretend it never happened. |
 | `zibi --count` | How many things has zibi hoarded for you? |
@@ -159,3 +158,7 @@ zibi stores everything locally.
 - **Shell output capture** for `--snatch` works via a hook that tees command output to `~/.cache/zibi/last_output.txt`. Running `zibi --init` prints the hook script. Sourcing it activates the feature.
 
 `--paste` and `--top` write directly to stdout with no Rich formatting so they are safe to use in pipes and scripts.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
