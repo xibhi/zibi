@@ -4,7 +4,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/zibi.svg)](https://pypi.org/project//)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/xibhi/zibi/blob/master/LICENSE)
 
-`zibi` is a cute clipboard manager that lives entirely in your terminal. Copy, paste, search, transform, pin, share, and track clipboard history — all without touching a mouse or opening a browser.
+`zibi` is a cute clipboard manager that lives entirely in your terminal. Copy, pin, share, transform and revisit clipboard history without leaving the command line — all without touching a mouse or opening a browser.
 
 ---
 
