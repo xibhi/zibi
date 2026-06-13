@@ -10,7 +10,7 @@
 
 ## Demo
 
-![zibi --help screen](./assets/zibi.gif)
+<https://github.com/user-attachments/assets/2f7492c2-6b20-44f0-885c-21afda5b8f6c>
 
 ---
 
