@@ -735,7 +735,7 @@ def clear_command() -> None:
         pinned = len(list_history(pinned_only=True))
         deletable = total - pinned
         if not Confirm.ask(
-            "This will burn ALL non-pinned history. {total} entries gone forever. Sure?",
+            f"This will burn ALL non-pinned history. {deletable} entries gone forever. Sure?",
             default=False,
         ):
             print_warning("Clipboard and history were not changed.")
