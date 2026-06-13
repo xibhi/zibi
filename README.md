@@ -153,7 +153,7 @@ zibi --snatch
 zibi stores everything locally.
 
 - **Clipboard history** is saved to `~/.local/share/zibi/history.db` (SQLite) every time `--copy` or `--snatch` is used.
-- **Pinned entries** are flagged in the database and excluded from `--wipe`.
+- **Pinned entries** are flagged in the database and excluded from `--clear`.
 - **Config** is stored at `~/.config/zibi/config.toml` and auto-created with defaults on first run.
 - **Shell output capture** for `--snatch` works via a hook that tees command output to `~/.cache/zibi/last_output.txt`. Running `zibi --init` prints the hook script. Sourcing it activates the feature.
 
