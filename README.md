@@ -119,8 +119,8 @@ zibi --qr
 | `zibi --yeet` | Yeet your clipboard to the internet. Get a link back. |
 | `zibi --spy` | Stare at your clipboard like a paranoid security guard. |
 | `zibi --kill <index>` | Erase one embarrassing entry from the record. |
-| `zibi --clear` | Wipe the clipboard clean. Pretend it never happened. |
-| `zibi --wipe` | Burn the history down. Pins survive the fire. |
+| `zibi --clear` | Burn the history down. Pins survive the fire. |
+| `zibi --wipe` | Wipe the clipboard clean. Pretend it never happened. |
 | `zibi --count` | How many things has zibi hoarded for you? |
 | `zibi --top` | What was the last thing you trusted zibi with? |
 | `zibi --stats` | Stare at graphs of your clipboard addiction. |

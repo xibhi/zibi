@@ -203,24 +203,14 @@ def _help_command_table() -> Table:
 
 
 def show_help() -> None:
-    # ASCII-safe logo for Windows compatibility (Unicode blocks don't work on Windows)
-    logo_text = """          ███  █████      ███ 
-          ░░░  ░░███      ░░░  
- █████████ ███ ░███████  ████ 
-░█░░░░███ ░░██ ░███░░███░███ 
-░   ███░   ░███ ░███ ░███ ░███ 
-  ███░   █ ░███ ░███ ░███ ░███ 
- █████████ █████ ████████ █████
-░░░░░░░░░ ░░░░░ ░░░░░░░░  ░░░░░ """
-    
-    console.print(logo_text)
+    console.print("Usage: zibi [OPTIONS] COMMAND [ARGS]...")
     console.print()
-    console.print("Your clipboard's terminal slave.", style="italic yellow")
+    console.print("      Your clipboard's terminal slave.")
     console.print()
-    console.print("Options:", style="bold cyan")
+    console.print("Options:")
     console.print("  --help  Show this message.")
     console.print()
-    console.print("Commands:", style="bold cyan")
+    console.print("Commands:")
     
     commands = [
         ("--copy", "Steal text from your fingers and hold it hostage."),
@@ -230,15 +220,15 @@ def show_help() -> None:
         ("--init", "Teach your shell to spy for zibi."),
         ("--uninstall", "Kills zibi from your system completely."),
         ("--log", "Scroll through zibi's diary of everything you copied."),
-        ("--fetch <index>", "Resurrect a dead clipboard entry back to life."),
+        ("--fetch [index]", "Resurrect a dead clipboard entry back to life."),
         ("--grep", "Dig through the graveyard for something specific."),
-        ("--pin <index>", "Tell zibi this one is too important to ever forget."),
-        ("--unpin <index>", "Free an entry from zibi's eternal memory."),
+        ("--pin [index]", "Tell zibi this one is too important to ever forget."),
+        ("--unpin [index]", "Free an entry from zibi's eternal memory."),
         ("--pins", "Show everything zibi has sworn to never forget."),
         ("--qr", "Turn your clipboard links into a scannable square of chaos."),
         ("--yeet", "Yeet your clipboard to the internet. Get a link back."),
         ("--spy", "Stare at your clipboard like a paranoid security guard."),
-        ("--kill <index>", "Erase one embarrassing entry from the record."),
+        ("--kill [index]", "Erase one embarrassing entry from the record."),
         ("--clear", "Burn the history down. Pins survive the fire."),
         ("--wipe", "Wipe the clipboard clean. Pretend it never happened."),
         ("--count", "How many things has zibi hoarded for you? Find out."),
@@ -250,10 +240,12 @@ def show_help() -> None:
     ]
     
     for cmd, desc in commands:
-        console.print(f"  {cmd:<18} {desc}")
+        # Use Text object with no_wrap to prevent Rich markup interpretation
+        text = Text(f"  {cmd:<18} {desc}", no_wrap=False)
+        console.print(text)
     
     console.print()
-    console.print("Transform modes:", style="bold cyan")
+    console.print("Transform modes:")
     
     # Update TRANSFORM_MODES to match new names
     transform_modes = [
@@ -273,7 +265,6 @@ def show_help() -> None:
         console.print(f"    {mode:<12} {desc}")
     
     console.print()
-    console.print("Product by Sibhi.")
 
 
 @app.command("@help")
